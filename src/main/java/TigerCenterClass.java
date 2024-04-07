@@ -8,10 +8,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.List;
 import java.util.function.Supplier;
 
 class TigerCenterClass {
@@ -44,6 +46,34 @@ class TigerCenterClass {
         assertEquals("Class Search", classButton.getText());
         classButton.click();
         Thread.sleep(1000);
+    }
+
+    @Test
+    void testClassSearchButtonJcs8198() throws Exception {
+        driver.get("https://tigercenter.rit.edu/");
+        WebElement classButton = driver.findElement(By.xpath("//*[@id=\"angularApp\"]/app-root/div[2]/mat-sidenav-container[2]/mat-sidenav-content/div[2]/landing-page/div/div/div/div/div[4]/a[1]"));
+        assertEquals("Class Search", classButton.getText());
+        classButton.click();
+        Select termSelector = new Select(driver.findElement(By.name("termSelector")));
+        termSelector.selectByValue("1: 0");
+        WebElement classInput = driver.findElement(By.cssSelector(".completer-input"));
+        classInput.clear();
+        classInput.sendKeys("Software Testing");
+        driver.findElement(By.cssSelector((".classSearchSearchButton"))).click();
+        WebElement resultsRowsParent = driver.findElement(By.cssSelector(".classSearchBasicResultsMargin"));
+        List<WebElement> resultRows = resultsRowsParent.findElements(By.className("row"));
+        resultRows.remove(0);
+        for (WebElement specificResult : resultRows) {
+
+            List<WebElement> resultsInfo = specificResult.findElements(By.className("classSearchBasicResultsText"));
+            System.out.println("Name: " + resultsInfo.get(0).getText());
+            System.out.println("Days: " + resultsInfo.get(6).getText());
+            System.out.println("Times: " + resultsInfo.get(7).getText());
+            System.out.println("Location: " + resultsInfo.get(8).getText());
+            System.out.println("Instructor: " + resultsInfo.get(resultsInfo.size()-1).getText());
+            System.out.println(" ");
+        }
+        Thread.sleep(3000);
     }
 
     private enum Browser {

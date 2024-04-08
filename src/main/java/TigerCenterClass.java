@@ -1,7 +1,6 @@
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -16,9 +15,11 @@ import java.time.Duration;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class TigerCenterClass {
     private static final Browser BROWSER
-            = Browser.FIREFOX; // Can be changed to Browser.CHROME
+            = Browser.CHROME; // Can be changed to Browser.CHROME
 
     private WebDriver driver;
 
@@ -47,9 +48,21 @@ class TigerCenterClass {
         classButton.click();
         Thread.sleep(1000);
     }
+    @Test
+    void testEngineeringCloudSoftwareSystems() throws Exception {
+        assertEquals(4, classSearchButtonHelper("Engineering Cloud Software Systems").size());
+    }
+    @Test
+    void testSoftwareTesting() throws Exception {
+        assertEquals(1, classSearchButtonHelper("Software Testing").size());
+    }
 
     @Test
-    void testClassSearchButtonJcs8198() throws Exception {
+    void testPersonalSE() throws Exception {
+        assertEquals(4, classSearchButtonHelper("Personal Software Engineering").size());
+    }
+
+    List<WebElement> classSearchButtonHelper(String className) throws Exception {
         driver.get("https://tigercenter.rit.edu/");
         WebElement classButton = driver.findElement(By.xpath("//*[@id=\"angularApp\"]/app-root/div[2]/mat-sidenav-container[2]/mat-sidenav-content/div[2]/landing-page/div/div/div/div/div[4]/a[1]"));
         assertEquals("Class Search", classButton.getText());
@@ -58,11 +71,11 @@ class TigerCenterClass {
         termSelector.selectByValue("1: 0");
         WebElement classInput = driver.findElement(By.cssSelector(".completer-input"));
         classInput.clear();
-        classInput.sendKeys("Software Testing");
+        classInput.sendKeys(className);
         driver.findElement(By.cssSelector((".classSearchSearchButton"))).click();
         WebElement resultsRowsParent = driver.findElement(By.cssSelector(".classSearchBasicResultsMargin"));
         List<WebElement> resultRows = resultsRowsParent.findElements(By.className("row"));
-        resultRows.remove(0);
+        resultRows.removeFirst();
         for (WebElement specificResult : resultRows) {
 
             List<WebElement> resultsInfo = specificResult.findElements(By.className("classSearchBasicResultsText"));
@@ -70,10 +83,11 @@ class TigerCenterClass {
             System.out.println("Days: " + resultsInfo.get(6).getText());
             System.out.println("Times: " + resultsInfo.get(7).getText());
             System.out.println("Location: " + resultsInfo.get(8).getText());
-            System.out.println("Instructor: " + resultsInfo.get(resultsInfo.size()-1).getText());
+            System.out.println("Instructor: " + resultsInfo.getLast().getText());
             System.out.println(" ");
         }
         Thread.sleep(3000);
+        return resultRows;
     }
 
     private enum Browser {

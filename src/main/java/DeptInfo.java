@@ -7,16 +7,21 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DeptInfo {
     private static final Browser BROWSER
-            = Browser.FIREFOX; // Can be changed to Browser.CHROME
+            = Browser.CHROME; // Can be changed to Browser.CHROME
 
     private WebDriver driver;
 
@@ -38,66 +43,77 @@ class DeptInfo {
     }
 
     @Test
-    void testDepartmentChairOfSEJcs8198() throws Exception {
-        driver.get("https://rit.edu/");
-        driver.findElement(By.cssSelector("a.black-on-white:nth-child(2)")).click();
-        driver.findElement(By.cssSelector("div.form-group:nth-child(4) > label:nth-child(2)")).click();
-        WebElement searchField = driver.findElement(By.cssSelector("#edit-keys--2"));
-        searchField.clear();
-        searchField.sendKeys("Department Chair Department of Software Engineering");
-        driver.findElement(By.cssSelector("#edit-submit-directory--2")).click();
-        WebElement resultsParent = driver.findElement(By.cssSelector(".views-infinite-scroll-content-wrapper"));
-        List<WebElement> results = resultsParent.findElements(By.className("views-row"));
-        List<WebElement> resultInfo = results.getFirst().findElements(By.className("pb-2"));
-        System.out.println("Name: " + resultInfo.getFirst().getText());
-        System.out.println("Title: " + resultInfo.get(1).getText());
-        System.out.println("Email: " + resultInfo.getLast().getText());
-        System.out.println("Department: " + resultInfo.get(2).getText());
-        System.out.println("College: " + resultInfo.get(resultInfo.size()-2).getText());
-        System.out.println(" ");
-        Thread.sleep(3000);
+    void testDepartmentChairOfSE() throws Exception {
+        Map<String, String> expectedMap = new HashMap<>() {{
+            put("Name", "Naveen Sharma");
+            put("Email", "nxsvse@rit.edu");
+            put("Title", "Department Chair");
+            put("Department", "Department of Software Engineering");
+            put("College", "Golisano College of Computing and Information Sciences");
+        }};
+        String cardHeaderCSSSelector = "#card-header-4291";
+        String cardCollapseCSSSelector = "#card-collapse-4291";
+        Map<String, String> resultMap = departmentChairSearchHelper(cardHeaderCSSSelector, cardCollapseCSSSelector);
+        assertEquals(expectedMap, resultMap);
     }
 
     @Test
-    void testDepartmentChairOfCSJcs8198() throws Exception {
-        driver.get("https://rit.edu/");
-        driver.findElement(By.cssSelector("a.black-on-white:nth-child(2)")).click();
-        driver.findElement(By.cssSelector("div.form-group:nth-child(4) > label:nth-child(2)")).click();
-        WebElement searchField = driver.findElement(By.cssSelector("#edit-keys--2"));
-        searchField.clear();
-        searchField.sendKeys("Department Chair Department of Computer Science");
-        driver.findElement(By.cssSelector("#edit-submit-directory--2")).click();
-        WebElement resultsParent = driver.findElement(By.cssSelector(".views-infinite-scroll-content-wrapper"));
-        List<WebElement> results = resultsParent.findElements(By.className("views-row"));
-        List<WebElement> resultInfo = results.get(1).findElements(By.className("pb-2"));
-        System.out.println("Name: " + resultInfo.getFirst().getText());
-        System.out.println("Title: " + resultInfo.get(1).getText());
-        System.out.println("Email: " + resultInfo.getLast().getText());
-        System.out.println("Department: " + resultInfo.get(2).getText());
-        System.out.println("College: " + resultInfo.get(resultInfo.size()-2).getText());
-        System.out.println(" ");
-        Thread.sleep(3000);
+    void testDepartmentChairOfCS() throws Exception {
+        Map<String, String> expectedMap = new HashMap<>() {{
+            put("Name", "Zachary Butler");
+            put("Email", "zxbvcs@rit.edu");
+            put("Title", "Interim Department Chair");
+            put("Department", "Department of Computer Science");
+            put("College", "Golisano College of Computing and Information Sciences");
+        }};
+        String cardHeaderCSSSelector = "#card-header-4303";
+        String cardCollapseCSSSelector = "#card-collapse-4303";
+        Map<String, String> resultMap = departmentChairSearchHelper(cardHeaderCSSSelector, cardCollapseCSSSelector);
+        assertEquals(expectedMap, resultMap);
     }
 
     @Test
-    void testDepartmentChairOfSIJcs8198() throws Exception {
+    void testDepartmentChairOfSI() throws Exception {
+        Map<String, String> expectedMap = new HashMap<>() {{
+            put("Name", "Eva Navarro");
+            put("Email", "eva.navarro@rit.edu");
+            put("Title", "Director School of Information");
+            put("Department", "School of Information");
+            put("College", "Golisano College of Computing and Information Sciences");
+        }};
+        String cardHeaderCSSSelector = "#card-header-4315";
+        String cardCollapseCSSSelector = "#card-collapse-4315";
+        Map<String, String> resultMap = departmentChairSearchHelper(cardHeaderCSSSelector, cardCollapseCSSSelector);
+        assertEquals(expectedMap, resultMap);
+    }
+
+    Map<String, String> departmentChairSearchHelper(String cardHeaderCSSSelector, String cardCollapseCSSSelector) throws Exception {
+        String expandDeptByCSSSelector = cardHeaderCSSSelector + " > p > a";
+        String personalInfoByCSSSelector = cardCollapseCSSSelector + " > div > div > article > div > div.col-xs-12.col-sm-5.person--info";
+        String personExtraTextByCSSSelector = cardCollapseCSSSelector + " > div > div > article > div > div.col-xs-12.col-sm-4.person--extra-text";
         driver.get("https://rit.edu/");
-        driver.findElement(By.cssSelector("a.black-on-white:nth-child(2)")).click();
-        driver.findElement(By.cssSelector("div.form-group:nth-child(4) > label:nth-child(2)")).click();
-        WebElement searchField = driver.findElement(By.cssSelector("#edit-keys--2"));
-        searchField.clear();
-        searchField.sendKeys("Director School of Information");
-        driver.findElement(By.cssSelector("#edit-submit-directory--2")).click();
-        WebElement resultsParent = driver.findElement(By.cssSelector(".views-infinite-scroll-content-wrapper"));
-        List<WebElement> results = resultsParent.findElements(By.className("views-row"));
-        List<WebElement> resultInfo = results.get(6).findElements(By.className("pb-2"));
-        System.out.println("Name: " + resultInfo.getFirst().getText());
-        System.out.println("Title: " + resultInfo.get(1).getText());
-        System.out.println("Email: " + resultInfo.getLast().getText());
-        System.out.println("Department: " + resultInfo.get(2).getText());
-        System.out.println("College: " + resultInfo.get(resultInfo.size()-2).getText());
+        driver.findElement(By.cssSelector("#main-nav--link--academics")).click();
+        driver.findElement(By.cssSelector("#block-rit-bootstrap-subtheme-rit-main-menu > ul > li.nav-item.expanded.dropdown.mouse-focus.show-subnav > div > div > ul:nth-child(2) > li:nth-child(1) > a")).click();
+        driver.findElement(By.cssSelector("#block-rit-bootstrap-subtheme-content > div.field.field--name-field-content.field--type-entity-reference-revisions.field--label-hidden.field__items > div:nth-child(3) > div > div > div > div > div > div > div > div > ul > li:nth-child(3) > a")).click();
+        driver.findElement(By.cssSelector("#block-rit-bootstrap-subtheme-rit-main-menu > ul > li:nth-child(7) > a")).click();
+        driver.findElement(By.cssSelector(expandDeptByCSSSelector)).click();
+        WebElement focusElement = driver.findElement(By.cssSelector(personalInfoByCSSSelector));
+        Actions actions = new Actions(driver);
+        actions.moveToElement(focusElement).perform();
+        WebElement resultParent = driver.findElement(By.cssSelector(personalInfoByCSSSelector));
+        List<WebElement> results = resultParent.findElements(By.className("pb-2"));
+        WebElement resultParent1 = driver.findElement(By.cssSelector(personExtraTextByCSSSelector));
+        List<WebElement> results1 = resultParent1.findElements(By.className("pb-2"));
+        System.out.println("Name: " + results.get(0).getText());
+        System.out.println("Email: " + results1.getFirst().getText());
+        System.out.println("Title: " + results.get(1).getText());
+        System.out.println("Department: " + results.get(2).getText());
+        System.out.println("College: " + results.get(3).getText());
         System.out.println(" ");
-        Thread.sleep(3000);
+        Thread.sleep(5000);
+        return Map.of("Name", results.get(0).getText(), "Email", results1.getFirst().getText(), "Title",
+                results.get(1).getText(),"Department", results.get(2).getText(), "College",
+                results.get(3).getText());
     }
 
     private enum Browser {

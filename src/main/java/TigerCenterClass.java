@@ -51,15 +51,15 @@ class TigerCenterClass {
 
     @Test
     void testSoftwareTesting() throws Exception {
-        classSearchButtonHelper("Software Testing");
+        assertEquals(1, classSearchButtonHelper("Software Testing").size());
     }
 
     @Test
     void testPersonalSE() throws Exception {
-        classSearchButtonHelper("Personal Software Engineering");
+        assertEquals(4, classSearchButtonHelper("Personal Software Engineering").size());
     }
 
-    void classSearchButtonHelper(String className) throws Exception {
+    List<WebElement> classSearchButtonHelper(String className) throws Exception {
         driver.get("https://tigercenter.rit.edu/");
         WebElement classButton = driver.findElement(By.xpath("//*[@id=\"angularApp\"]/app-root/div[2]/mat-sidenav-container[2]/mat-sidenav-content/div[2]/landing-page/div/div/div/div/div[4]/a[1]"));
         assertEquals("Class Search", classButton.getText());
@@ -72,7 +72,7 @@ class TigerCenterClass {
         driver.findElement(By.cssSelector((".classSearchSearchButton"))).click();
         WebElement resultsRowsParent = driver.findElement(By.cssSelector(".classSearchBasicResultsMargin"));
         List<WebElement> resultRows = resultsRowsParent.findElements(By.className("row"));
-        resultRows.remove(0);
+        resultRows.removeFirst();
         for (WebElement specificResult : resultRows) {
 
             List<WebElement> resultsInfo = specificResult.findElements(By.className("classSearchBasicResultsText"));
@@ -80,10 +80,11 @@ class TigerCenterClass {
             System.out.println("Days: " + resultsInfo.get(6).getText());
             System.out.println("Times: " + resultsInfo.get(7).getText());
             System.out.println("Location: " + resultsInfo.get(8).getText());
-            System.out.println("Instructor: " + resultsInfo.get(resultsInfo.size() - 1).getText());
+            System.out.println("Instructor: " + resultsInfo.getLast().getText());
             System.out.println(" ");
         }
         Thread.sleep(3000);
+        return resultRows;
     }
 
     private enum Browser {

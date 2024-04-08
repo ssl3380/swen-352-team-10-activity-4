@@ -3,11 +3,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.interactions.Actions;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -97,8 +97,9 @@ class DeptInfo {
         driver.findElement(By.cssSelector("#block-rit-bootstrap-subtheme-rit-main-menu > ul > li:nth-child(7) > a")).click();
         driver.findElement(By.cssSelector(expandDeptByCSSSelector)).click();
         WebElement focusElement = driver.findElement(By.cssSelector(personalInfoByCSSSelector));
-        Actions actions = new Actions(driver);
-        actions.moveToElement(focusElement).perform();
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        // Scrolling down the page till the element is found
+        js.executeScript("arguments[0].scrollIntoView();", focusElement);
         WebElement resultParent = driver.findElement(By.cssSelector(personalInfoByCSSSelector));
         List<WebElement> results = resultParent.findElements(By.className("pb-2"));
         WebElement resultParent1 = driver.findElement(By.cssSelector(personExtraTextByCSSSelector));

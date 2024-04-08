@@ -48,7 +48,10 @@ class TigerCenterClass {
         classButton.click();
         Thread.sleep(1000);
     }
-
+    @Test
+    void testEngineeringCloudSoftwareSystems() throws Exception {
+        assertEquals(4, classSearchButtonHelper("Engineering Cloud Software Systems").size());
+    }
     @Test
     void testSoftwareTesting() throws Exception {
         assertEquals(1, classSearchButtonHelper("Software Testing").size());
